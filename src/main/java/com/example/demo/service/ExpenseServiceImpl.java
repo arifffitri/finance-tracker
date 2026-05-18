@@ -34,9 +34,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     // Retrieve all expenses for the dashboard
 	@Override
     public List<ExpenseDO> getAllExpenses() {
-        List<Expense> rawList = repo.findAll();
-        List<ExpenseDO> resultList = mapper.toDOList(rawList);
-        return resultList;
+        return mapper.toDOList(repo.findAll());
     }
 	
 	// Delete an expense by its ID
