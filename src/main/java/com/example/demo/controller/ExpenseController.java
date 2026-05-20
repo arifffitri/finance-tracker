@@ -3,6 +3,10 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.ExpenseDO;
+import com.example.demo.dto.ExpenseFilterDTO;
 import com.example.demo.dto.ExpenseVM;
 import com.example.demo.service.ExpenseService;
 
@@ -30,9 +35,12 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllExpenses() {
-        List<ExpenseDO> expenses = expenseService.getAllExpenses();
-        return ResponseEntity.ok(expenses);
+    public ResponseEntity<Page<ExpenseDO>> getAllExpenses(
+    		ExpenseFilterDTO filters,
+    		@PageableDefault(size = 20, sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
+        
+    	Page<ExpenseDO> response = expenseService.getExpensesPaginated(filters, pageable);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

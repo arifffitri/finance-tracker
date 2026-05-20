@@ -13,7 +13,7 @@ public interface ExpenseMapper {
 
 	Expense toEntity(ExpenseVM vm);
 	
-	ExpenseDO toDO(Expense entity);
+	ExpenseDO toDO(Expense expense);
 	
-	List<ExpenseDO> toDOList(List<Expense> expenseList);
+	List<ExpenseDO> toDOList(List<Expense> expenses);
 }
