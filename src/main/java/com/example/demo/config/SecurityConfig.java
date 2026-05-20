@@ -18,6 +18,10 @@ public class SecurityConfig {
             
             // Authorize our specific API endpoints to be accessed by anyone
             .authorizeHttpRequests(auth -> auth
+            	.requestMatchers(
+            			"/v3/api-docs/**",
+            		    "/swagger-ui/**",
+            		    "/swagger-ui.html").permitAll()
                 .requestMatchers("/api/**").permitAll() // Permits all links starting with /api/
                 .anyRequest().authenticated()          // Anything else still requires login
             );
