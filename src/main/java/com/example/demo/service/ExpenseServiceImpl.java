@@ -3,9 +3,14 @@ package com.example.demo.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.ExpenseDO;
+import com.example.demo.dto.ExpenseFilterDTO;
 import com.example.demo.dto.ExpenseVM;
 import com.example.demo.entity.Expense;
 import com.example.demo.mapper.ExpenseMapper;
@@ -32,12 +37,19 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     // Retrieve all expenses for the dashboard
-	@Override
-    public List<ExpenseDO> getAllExpenses() {
-        List<Expense> rawList = repo.findAll();
-        List<ExpenseDO> resultList = mapper.toDOList(rawList);
-        return resultList;
-    }
+	public Page<ExpenseDO> getExpensesPaginated(ExpenseFilterDTO filter, Pageable pageable) {
+		// Combine dynamic filters
+		Specification<Expense> spec = ExpenseSpecification.filterBy(filter);
+		
+		// Fetch paginated entities from the DB
+		Page<Expense> entityPage = repo.findAll(spec, pageable);
+		
+		// Map list content to DTOs/DOs
+		List<ExpenseDO> list = mapper.toDOList(entityPage.getContent());
+		
+		// Return a new Page object containing metadata (total elements, total pages)
+		return new PageImpl<>(list, pageable, entityPage.getTotalElements());
+	}
 	
 	// Delete an expense by its ID
     public void deleteExpense(Long id) {
